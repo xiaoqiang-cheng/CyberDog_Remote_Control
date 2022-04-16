@@ -22,14 +22,26 @@ class CyberRemoteControl(object):
     def set_control_hz(self, hz):
         self.hz = hz
 
-
+    # this code is so terrible that i will refact it in future
     def remote_callback(self, handle_state : HandleState):
         if handle_state.button["9"] == 1:
             self.control_base.switch_move_mode()
-
         elif handle_state.button["10"] == 1:
             self.control_base.switch_sit_mode()
-
+        elif handle_state.button["5"] == 1:
+            self.control_base.HiFive()
+        elif handle_state.axis["0"] > 0.5:
+            self.control_base.GoRight()
+        elif handle_state.axis["0"] < -0.5:
+            self.control_base.GoLeft()
+        elif handle_state.axis["1"] < -0.5:
+            self.control_base.GoForward()
+        elif handle_state.axis["1"] > 0.5:
+            self.control_base.GoBack()
+        elif handle_state.axis["3"] > 0.5:
+            self.control_base.TurnRight()
+        elif handle_state.axis["3"] < -0.5:
+            self.control_base.TurnLeft()
 
     def run(self):
         self.remote_handle.spin()

@@ -80,6 +80,20 @@ class GrpcConnectBase(object):
             succeed_state = resp.succeed
         return succeed_state
 
+    def check_hi_five(self):
+        response = self.stub.setExtmonOrder(
+                cyber_app_pb2.ExtMonOrder_Request(
+                    order=cyber_app_pb2.MonOrder(
+                        id=cyber_app_pb2.MonOrder.MONO_ORDER_HI_FIVE,
+                        para=0      # seem not need
+                    ),
+                    timeout=50))
+        succeed_state = False
+        for resp in response:
+            succeed_state = resp.succeed
+
+        return succeed_state
+
     def check_sit_down(self):
         if self.stub is None:
             return False
@@ -156,6 +170,11 @@ class ControlBase(object):
         ret = self.grpc_base.check_sit_down()
         return ret
 
+    def HiFive(self):
+        ret = self.grpc_base.check_hi_five()
+        return ret
+
+
     def Stop(self):
         self.linear = Vector3(0, 0, 0)
         self.angular = Vector3(0, 0, 0)
@@ -175,7 +194,7 @@ class ControlBase(object):
 
     def GoLeft(self, vy = 0.1):
         self.linear.x = 0
-        self.linear.y = vy
+        self.linear.y = -vy
         self.angular.z = 0
         self.grpc_base.send_data(self.linear, self.angular)
 
