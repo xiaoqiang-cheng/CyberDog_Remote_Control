@@ -16,15 +16,18 @@ class GrpcConnectBase(object):
     def __init__(self, dog_ip = "192.168.1.4") -> None:
         self.dog_ip = dog_ip
         self.stub = None
+        self.channel = None
 
     def check_connect_ready(self):
-        if (self.dog_ip is None):
-            with grpc.insecure_channel(self.dog_ip + ':50051') as channel:
-                try:
-                    grpc.channel_ready_future(channel).result(timeout=10)
-                except grpc.FutureTimeoutError:
-                    return False
-        self.stub = cyber_app_grpc.CyberdogAppStub(channel)
+        if (self.dog_ip is not None):
+            # with grpc.insecure_channel(self.dog_ip + ':50051') as channel:
+            self.channel = grpc.insecure_channel(self.dog_ip + ':50051')
+            try:
+                grpc.channel_ready_future(self.channel).result(timeout=10)
+            except grpc.FutureTimeoutError:
+                return False
+            self.stub = cyber_app_grpc.CyberdogAppStub(self.channel)
+
         return True
 
     def check_stand_up(self):
@@ -145,6 +148,12 @@ class ControlBase(object):
         ret = self.grpc_base.check_stand_up()
         if ret:
             ret = self.grpc_base.check_move_mode()
+        return ret
+
+    def switch_sit_mode(self):
+        if self.grpc_base.stub is None:
+            return False
+        ret = self.grpc_base.check_sit_down()
         return ret
 
     def Stop(self):
