@@ -174,7 +174,6 @@ class ControlBase(object):
         ret = self.grpc_base.check_hi_five()
         return ret
 
-
     def Stop(self):
         self.linear = Vector3(0, 0, 0)
         self.angular = Vector3(0, 0, 0)
