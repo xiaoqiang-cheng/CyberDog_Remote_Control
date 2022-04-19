@@ -42,7 +42,7 @@ def ReceiveVideo():
         data = numpy.frombuffer(stringData, numpy.uint8)#将获取到的字符流数据转换成1维数组
         decimg=cv2.imdecode(data,cv2.IMREAD_COLOR)#将数组解码成图像
         hands, img = detector.findHands(decimg)
-        print(len(hands) )
+        print(len(hands))
         if (len(hands) == 2):
             print("get two hands to reset!")
             control_base.switch_sit_mode()
